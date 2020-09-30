@@ -1,9 +1,13 @@
-import { createApp } from "vue";
+import {
+    createApp
+} from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import jsppUi from "@/libs/jspp-ui";
 
 createApp(App)
-  .use(store)
-  .use(router)
-  .mount("#app");
+    .use(store)
+    .use(jsppUi)
+    .use(router)
+    .mount("#app");

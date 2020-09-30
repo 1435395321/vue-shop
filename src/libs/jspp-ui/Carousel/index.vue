@@ -27,6 +27,7 @@ export default {
         },
         initial: {
             type: Number,
+            a: String,
             default: 0
         },
         hasDot: {

@@ -2,6 +2,8 @@
 <div class="carousel" @mouseenter="mouseEnter" @mouseleave="mouseLeave">
     <div class="inner">
         <CarDot :hasDot="hasDot" :itemLen="itemLen" :currentIndex="currentIndex" :dotBgColor="dotBgColor" @dotclick="dotclick" />
+        <CarDirector dir="prev" @dirclick="dirclick" />
+        <CarDirector dir="next" @dirclick="dirclick" />
         <slot></slot>
     </div>
 </div>
@@ -17,12 +19,13 @@ import {
 } from 'vue';
 
 import CarDot from './Dot';
+import CarDirector from './Director';
 
 export default {
     name: 'Carousel',
     components: {
         CarDot,
-
+        CarDirector
     },
     props: {
         autoplay: {
@@ -31,7 +34,7 @@ export default {
         },
         duration: {
             type: Number,
-            default: 5000
+            default: 3000
         },
         initial: {
             type: Number,
@@ -88,6 +91,14 @@ export default {
             state.currentIndex = index;
         }
 
+        const dirclick = (dir) => {
+            setIndex(dir);
+        }
+
+        const mouseEnter = () => {
+            _clearIntervalFn();
+        }
+
         const mouseLeave = () => {
             autoPlay();
         }
@@ -109,6 +120,8 @@ export default {
         return {
             ...toRefs(state),
             dotclick,
+            dirclick,
+            mouseEnter,
             mouseLeave
         }
     }

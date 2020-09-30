@@ -1,6 +1,7 @@
 <template>
-<div class="carousel">
+<div class="carousel" @mouseenter="mouseEnter" @mouseleave="mouseLeave">
     <div class="inner">
+        <CarDot :hasDot="hasDot" :itemLen="itemLen" :currentIndex="currentIndex" :dotBgColor="dotBgColor" @dotclick="dotclick" />
         <slot></slot>
     </div>
 </div>
@@ -11,11 +12,18 @@ import {
     reactive,
     toRefs,
     onMounted,
-    onBeforeMount,
+    onBeforeUnmount,
     getCurrentInstance
-} from 'vue'
+} from 'vue';
+
+import CarDot from './Dot';
+
 export default {
-    name: 'carousel',
+    name: 'Carousel',
+    components: {
+        CarDot,
+
+    },
     props: {
         autoplay: {
             type: Boolean,
@@ -23,11 +31,10 @@ export default {
         },
         duration: {
             type: Number,
-            default: 2000
+            default: 5000
         },
         initial: {
             type: Number,
-            a: String,
             default: 0
         },
         hasDot: {
@@ -37,32 +44,38 @@ export default {
         hasDirector: {
             type: Boolean,
             default: true
-        }
+        },
+        dotBgColor: String
     },
     setup(props) {
+        const instance = getCurrentInstance();
+
         const state = reactive({
             currentIndex: props.initial,
-            itemLeg: 0
+            itemLen: 0
         });
+
         let t = null;
-        const instance = getCurrentInstance();
-        const aotuPlay = () => {
+
+        const autoPlay = () => {
             if (props.autoplay) {
                 t = setInterval(() => {
-                    setIndex('prev');
+                    setIndex('next');
                 }, props.duration)
             }
         }
+
         const setIndex = (dir) => {
             switch (dir) {
                 case 'next':
                     state.currentIndex += 1;
-                    if (state.currentIndex === state.itemLen)
+                    if (state.currentIndex === state.itemLen) {
                         state.currentIndex = 0;
+                    }
                     break;
                 case 'prev':
                     state.currentIndex -= 1;
-                    if (state.currentIndex == -1) {
+                    if (state.currentIndex === -1) {
                         state.currentIndex = state.itemLen - 1;
                     }
                     break;
@@ -71,31 +84,46 @@ export default {
             }
         }
 
+        const dotclick = (index) => {
+            state.currentIndex = index;
+        }
+
+        const mouseLeave = () => {
+            autoPlay();
+        }
+
         onMounted(() => {
             state.itemLen = instance.slots.default()[0].children.length;
-            aotuPlay()
+            autoPlay();
+        });
 
+        onBeforeUnmount(() => {
+            _clearIntervalFn();
         });
-        onBeforeMount(() => {
+
+        function _clearIntervalFn() {
             clearInterval(t);
-            t = null
-        });
+            t = null;
+        }
+
         return {
-            ...toRefs(state)
+            ...toRefs(state),
+            dotclick,
+            mouseLeave
         }
     }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .carousel {
-    widows: 100%;
+    width: 100%;
     height: 100%;
 
     .inner {
+        position: relative;
         width: 100%;
         height: 100%;
-        position: relative;
         overflow: hidden;
     }
 }

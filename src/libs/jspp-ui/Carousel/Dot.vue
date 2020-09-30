@@ -1,7 +1,7 @@
 <template>
 <div class="dot-wrapper" v-if="hasDot">
     <div class="dot-item" v-for="item in itemLen" :key="item">
-        <a href="javascript:;" class="dot-lk" :style="{ backgroundColor: (item - 1) === currentIndex ? dotBgColor : '#fff' }" @click="dotClick(item - 1)"></a>
+        <a href="javascript:;" class="dot-lk" :style="{ backgroundColor: (item - 1) === currentIndex ? dotBgColor : '#fff' }" @click="dotclick(item - 1)"></a>
     </div>
 </div>
 </template>
@@ -22,12 +22,12 @@ export default {
         }
     },
     setup(props, ctx) {
-        const dotClick = (index) => {
-            ctx.emit('dotClick', index);
+        const dotclick = (index) => {
+            ctx.emit('dotclick', index);
         }
 
         return {
-            dotClick
+            dotclick
         }
     }
 }

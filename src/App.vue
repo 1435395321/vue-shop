@@ -1,7 +1,7 @@
 <template>
 <div id="nav">
     <div class="container">
-        <carousel :autoplay="true" :duration='5000' :initial="0" :hasDot="true" :hasDirector="true">
+        <carousel :autoplay="true" :duration='5000' :initial="0" :hasDot="true" :hasDirector="true" dotBgColor="#000">
             <car-item v-for="(item,index) of carData" :key="index">
                 <img :src="require(`./assets/imgs/${item.img_name}`)">
             </car-item>
